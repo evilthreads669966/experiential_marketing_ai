@@ -1,0 +1,104 @@
+
+buildscript {
+
+    repositories {
+        jcenter()
+    }
+    
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.koin:koin-gradle-plugin:$koin_version"
+        classpath 'com.github.jengelman.gradle.plugins:shadow:6.1.0'
+    }
+}
+
+apply plugin: 'kotlin'
+apply plugin: 'application'
+apply plugin: 'koin'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+group 'com.limemedia'
+version '1.0.2'
+mainClassName = "io.ktor.server.netty.EngineMain"
+
+task stage(dependsOn: ['clean', 'installDist'])
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+sourceSets {
+    main.kotlin.srcDirs = main.java.srcDirs = ['src']
+    test.kotlin.srcDirs = test.java.srcDirs = ['test']
+    main.resources.srcDirs = ['resources']
+    test.resources.srcDirs = ['testresources']
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': mainClassName
+    }
+}
+repositories {
+    mavenLocal()
+    jcenter()
+    maven { url 'https://kotlin.bintray.com/ktor' }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    //KOTLIN
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    //COROUTINES
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    //KTOR NETTY
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+    //LOGBACK
+    implementation "ch.qos.logback:logback-classic:$logback_version"
+    //KTOR
+    implementation "io.ktor:ktor-server-core:$ktor_version"
+    //KTOR LOCATIONS
+    implementation "io.ktor:ktor-locations:$ktor_version"
+    //KTOR GSON
+    implementation "io.ktor:ktor-gson:$ktor_version"
+    //KTOR AUTH
+    implementation "io.ktor:ktor-auth:$ktor_version"
+    //KTOR SESSIONS
+    implementation "io.ktor:ktor-server-sessions:$ktor_version"
+    ///implementation "io.ktor:ktor-server-sessions:$ktor_version"
+    //KTOR HTML
+    implementation "io.ktor:ktor-html-builder:$ktor_version"
+    //CSS
+    implementation "org.jetbrains:kotlin-css-jvm:+"
+
+    implementation "io.ktor:ktor-client-core:$ktor_version"
+    implementation "io.ktor:ktor-client-cio:$ktor_version"
+    implementation "io.ktor:ktor-client-gson:$ktor_version"
+    implementation "io.ktor:ktor-client-serialization:$ktor_version"
+    implementation "io.ktor:ktor-client-auth:$ktor_version"
+    //KOTEST
+    testImplementation "io.kotest:kotest-runner-junit5:$kotest_version"
+    testImplementation "io.kotest:kotest-assertions-ktor:$kotest_version"
+    testImplementation "io.kotest:kotest-assertions-core:$kotest_version"
+    //KOIN
+    implementation "org.koin:koin-core:$koin_version"
+    implementation "org.koin:koin-core-ext:$koin_version"
+    implementation "org.koin:koin-ktor:$koin_version"
+    //EXPOSED
+    implementation "org.jetbrains.exposed:exposed-core:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-dao:$exposed_version"
+    implementation "org.jetbrains.exposed:exposed-jdbc:$exposed_version"
+    //H2
+    implementation "com.h2database:h2:$h2_version"
+
+    //HIKARI
+    implementation "com.zaxxer:HikariCP:$hikari_version"
+    //KTOR TEST
+    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    implementation group: 'com.geotab', name: 'java-sdk', version: '5.7.2004.3'
+}
